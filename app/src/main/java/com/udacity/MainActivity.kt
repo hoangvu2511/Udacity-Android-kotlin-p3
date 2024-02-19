@@ -9,24 +9,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.database.ContentObserver
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
 import com.udacity.databinding.ActivityMainBinding
 import com.udacity.utils.sendNotify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.contracts.contract
 
 class MainActivity : AppCompatActivity() {
 
@@ -75,7 +70,16 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: Implement code below
         binding.contentMain.customButton.setOnClickListener {
-            download()
+            if (binding.contentMain.radioButtonGroup.checkedRadioButtonId == -1) {
+                Toast.makeText(this, "Please choose option", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val urlToDownload = when (binding.contentMain.radioButtonGroup.checkedRadioButtonId) {
+                binding.contentMain.radioButtonOption1.id -> getString(R.string.radio_button_option_1_value)
+                binding.contentMain.radioButtonOption2.id -> getString(R.string.radio_button_option_2_value)
+                else -> getString(R.string.radio_button_option_3_value)
+            }
+            download(urlToDownload)
         }
     }
 
@@ -97,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 binding.contentMain.customButton.onHasDownloadId()
                 val destinationIntent = Intent(context, DetailActivity::class.java).apply {
                     putExtra(DetailActivity.DOWNLOAD_KEY, id)
+                    putExtra(DetailActivity.FILE_NAME_DOWNLOADED, getDownloadedFileName())
                     addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
 
@@ -111,7 +116,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download() {
+    private fun getDownloadedFileName(): String {
+        return when(binding.contentMain.radioButtonGroup.checkedRadioButtonId) {
+            binding.contentMain.radioButtonOption1.id -> getString(R.string.radio_button_option_1)
+            binding.contentMain.radioButtonOption2.id -> getString(R.string.radio_button_option_2)
+            else -> getString(R.string.radio_button_option_3)
+        }
+    }
+
+    private fun download(url: String) {
         val request =
             DownloadManager.Request(Uri.parse(URL))
                 .setTitle(getString(R.string.app_name))
@@ -122,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 .setAllowedOverRoaming(true)
                 .setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
-                    URL.split("/").last()
+                    url.split("/").last()
                 )
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager

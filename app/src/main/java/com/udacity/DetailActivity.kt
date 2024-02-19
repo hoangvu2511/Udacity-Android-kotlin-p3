@@ -19,6 +19,7 @@ import java.lang.Exception
 class DetailActivity : AppCompatActivity() {
     companion object {
         const val DOWNLOAD_KEY = "DOWNLOAD_KEY"
+        const val FILE_NAME_DOWNLOADED = "FILE_NAME_DOWNLOADED"
     }
 
     private lateinit var binding: ActivityDetailBinding
@@ -39,17 +40,17 @@ class DetailActivity : AppCompatActivity() {
         val downloadService =
             getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager ?: return
         val downloadId = intent.getLongExtra(DOWNLOAD_KEY, -1L)
+        val fileName = intent.getStringExtra(FILE_NAME_DOWNLOADED)
         if (downloadId != -1L) {
             val downloadQuery = DownloadManager.Query()
             downloadQuery.setFilterById(downloadId)
             with(downloadService.query(downloadQuery)) {
                 if (moveToFirst()) {
                     val idx = getColumnIndex(DownloadManager.COLUMN_STATUS)
-                    val nameIdx = getColumnIndex(DownloadManager.COLUMN_TITLE)
-                    if (idx < 0 || nameIdx < 0) return
+                    if (idx < 0) return
                     binding.contentDetail.tvFileName.text = this@DetailActivity.getString(
                         R.string.detail_format,
-                        getString(nameIdx),
+                        fileName,
                         when (getInt(idx)) {
                             DownloadManager.STATUS_SUCCESSFUL -> this@DetailActivity.getString(R.string.file_download_success)
                             DownloadManager.STATUS_FAILED -> this@DetailActivity.getString(R.string.file_download_fail)

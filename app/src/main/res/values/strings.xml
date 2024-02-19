@@ -8,15 +8,22 @@
     <string name="notification_description">The Project 3 repository is downloaded</string>
     <string name="notification_button">See changes</string>
 
-    <string name="button_name">Click me</string>
+    <string name="button_name">Download</string>
     <string name="button_loading">We are loading</string>
     <string name="button_completed">Download completed</string>
     <string name="title_activity_detail">DetailActivity</string>
 
     <string name="file_download_success">download successful</string>
     <string name="file_download_fail">download fail</string>
-    <string name="detail_format">%s %s</string>
+    <string name="detail_format">%s\n%s</string>
 
     <string name="nothing">Nothing</string>
     <string name="ok">Ok</string>
+
+    <string name="radio_button_option_1">Glide - Image Loading Library by BumpTech</string>
+    <string name="radio_button_option_1_value">https://github.com/bumptech/glide</string>
+    <string name="radio_button_option_2">LoadApp - Current repository by Udacity</string>
+    <string name="radio_button_option_2_value">https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter</string>
+    <string name="radio_button_option_3">Retrofit - Type-safe HTTP client for Android and Java by Square, Inc</string>
+    <string name="radio_button_option_3_value">https://github.com/square/retrofit</string>
 </resources>
